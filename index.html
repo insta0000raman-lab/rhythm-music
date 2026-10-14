@@ -3,229 +3,649 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#090611">
+<meta name="theme-color" content="#0b0712">
 <title>RHYTHM MUSIC</title>
 
 <style>
+:root {
+  --bg:#0b0712;
+  --panel:#171020;
+  --panel2:#21152d;
+  --purple:#a855f7;
+  --pink:#e879f9;
+  --text:#fff;
+  --muted:#b9a9c8;
+  --border:#382345;
+}
 *{box-sizing:border-box}
 body{
-  margin:0;
-  background:#090611;
-  color:white;
-  font-family:Arial,sans-serif;
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
 }
+button,input{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{
+  outline:2px solid var(--pink);outline-offset:3px
+}
+.app{min-height:100vh;padding-bottom:130px}
 header{
   padding:22px 18px;
-  background:linear-gradient(135deg,#240743,#10091c);
-  border-bottom:1px solid #38204d;
+  background:linear-gradient(135deg,#32104e,#130b20 75%);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:5;
 }
-.logo{font-size:25px;font-weight:900;letter-spacing:2px}
-.logo span{color:#c084fc}
-header p{color:#b9a8ca;font-size:13px}
-main{padding:20px 16px;padding-bottom:150px}
-h2{font-size:21px}
-.box{
-  background:#171020;
-  padding:18px;
-  border-radius:18px;
+.brand{font-size:25px;font-weight:900;letter-spacing:2px}
+.brand span{color:var(--pink)}
+.tagline{margin-top:7px;font-size:12px;color:var(--muted)}
+main{max-width:900px;margin:auto;padding:18px}
+.hero{
+  padding:23px;border-radius:22px;
+  background:linear-gradient(130deg,#512080,#251237 65%,#171020);
   margin-bottom:20px;
-  border:1px solid #30203d;
 }
-button,.upload{
-  border:0;
-  border-radius:12px;
-  background:#a855f7;
-  color:white;
-  padding:13px 16px;
-  font-weight:bold;
-  cursor:pointer;
-  display:inline-block;
+.hero h1{font-size:27px;margin:0 0 10px}
+.hero p{color:#eadcf5;line-height:1.5;font-size:14px}
+.badge{
+  display:inline-block;background:#ffffff1a;
+  border:1px solid #ffffff30;border-radius:30px;
+  padding:7px 11px;font-size:11px
 }
-input[type="text"]{
-  width:100%;
-  background:#090611;
-  border:1px solid #49305b;
-  padding:14px;
-  color:white;
-  border-radius:10px;
-  margin-bottom:10px;
+.card{
+  background:var(--panel);border:1px solid var(--border);
+  padding:17px;border-radius:18px;margin-bottom:18px;
+}
+h2{font-size:18px;margin:0 0 15px}
+h3{font-size:15px;margin:0 0 10px}
+.muted{color:var(--muted);font-size:13px;line-height:1.5}
+.row{display:flex;gap:9px}
+input[type=text]{
+  width:100%;min-width:0;background:#0c0812;color:white;
+  border:1px solid #493158;padding:13px;border-radius:11px;
+}
+.btn{
+  border:0;border-radius:11px;padding:12px 15px;
+  color:white;background:var(--purple);font-weight:700;
+}
+.btn.secondary{background:#30203e;border:1px solid #493158}
+.btn.ghost{background:transparent;border:1px solid #493158}
+.btn:active{transform:scale(.98)}
+.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:18px}
+.tab{
+  flex-shrink:0;border:1px solid var(--border);
+  background:var(--panel);color:var(--muted);
+  padding:10px 14px;border-radius:30px;
+}
+.tab.active{background:var(--purple);color:white;border-color:var(--purple)}
+.section{display:none}
+.section.active{display:block}
+.player-frame{
+  width:100%;aspect-ratio:16/9;min-height:220px;
+  background:#050408;border-radius:14px;overflow:hidden;
+}
+.player-frame iframe{width:100%;height:100%;border:0}
+.player-placeholder{
+  min-height:220px;display:flex;align-items:center;
+  justify-content:center;text-align:center;padding:20px;
+  color:var(--muted);background:#0c0812;border-radius:14px;
 }
 .song{
-  background:#20172b;
-  padding:14px;
-  border-radius:12px;
+  display:flex;align-items:center;gap:12px;
+  padding:12px;background:#21172b;border-radius:13px;
   margin:9px 0;
-  display:flex;
-  align-items:center;
-  gap:12px;
+}
+.cover{
+  flex-shrink:0;width:47px;height:47px;border-radius:10px;
+  background:linear-gradient(135deg,#8b5cf6,#e879f9);
+  display:grid;place-items:center;font-size:22px;
 }
 .song-info{flex:1;min-width:0}
-.song-info b{display:block;overflow-wrap:anywhere}
-.song-info small{color:#b9a8ca}
-.song button{padding:10px}
-#player{
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  background:#160d20;
-  border-top:1px solid #593477;
-  padding:14px 16px;
+.song-info strong{display:block;overflow-wrap:anywhere;font-size:14px}
+.song-info small{display:block;color:var(--muted);margin-top:5px}
+.icon-btn{
+  border:0;background:#352241;color:white;
+  border-radius:10px;padding:10px;
 }
-#now{font-size:14px;margin-bottom:10px}
-audio{width:100%;height:38px}
-.empty{color:#b9a8ca;font-size:14px}
+.empty{
+  color:var(--muted);font-size:13px;
+  text-align:center;padding:20px 8px;line-height:1.6;
+}
+.status{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.5}
+.playlist-row{
+  display:flex;gap:8px;margin-bottom:10px;align-items:center
+}
+.playlist-row .btn{padding:11px}
+.footer-player{
+  position:fixed;bottom:0;left:0;right:0;z-index:10;
+  background:#160d20f5;backdrop-filter:blur(14px);
+  border-top:1px solid #513365;padding:13px 16px;
+}
+.now-playing{
+  font-size:13px;font-weight:700;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  margin-bottom:9px;
+}
+.footer-actions{display:flex;gap:9px;align-items:center}
+.footer-actions .btn{padding:10px 13px}
+.footer-actions .muted{flex:1}
+small{font-size:11px}
+.hidden{display:none!important}
+@media(min-width:650px){
+  main{padding:25px}
+  .hero h1{font-size:34px}
+}
 </style>
 </head>
 
 <body>
+<div class="app">
 <header>
-  <div class="logo">RHYTHM <span>MUSIC</span> 🎵</div>
-  <p>Your music. Your vibe. Your world.</p>
+  <div class="brand">RHYTHM <span>MUSIC</span> ♫</div>
+  <div class="tagline">YOUR MUSIC · YOUR VIBE · YOUR WORLD</div>
 </header>
 
 <main>
-  <section class="box">
-    <h2>🎧 Your Music Library</h2>
-    <p class="empty">Apne phone ke songs yahan add karo.</p>
-    <label class="upload">
-      ＋ Import Songs
-      <input id="files" type="file" accept="audio/*" multiple hidden>
-    </label>
+  <section class="hero">
+    <span class="badge">✦ MUSIC EXPERIENCE</span>
+    <h1>Feel every beat.</h1>
+    <p>Discover music, play videos, save your favourites and create your own playlists.</p>
+    <button class="btn" onclick="showSection('search')">Explore Music →</button>
   </section>
 
-  <section class="box">
-    <h2>🔎 Search Music</h2>
-    <input id="search" type="text" placeholder="Song ka naam search karo...">
-  </section>
+  <nav class="tabs" aria-label="Music sections">
+    <button class="tab active" data-section="search"
+      onclick="showSection('search')">⌕ Discover</button>
+    <button class="tab" data-section="library"
+      onclick="showSection('library')">♫ Library</button>
+    <button class="tab" data-section="favorites"
+      onclick="showSection('favorites')">♥ Favorites</button>
+    <button class="tab" data-section="playlists"
+      onclick="showSection('playlists')">▤ Playlists</button>
+    <button class="tab" data-section="recent"
+      onclick="showSection('recent')">◷ Recently Played</button>
+  </nav>
 
-  <section>
-    <h2>🎶 All Songs <span id="count"></span></h2>
-    <div id="songs">
-      <p class="empty">Abhi koi song add nahi kiya.</p>
+  <section id="search" class="section active">
+    <div class="card">
+      <h2>⌕ Find your music</h2>
+      <p class="muted">
+        YouTube ka song ya video link paste karo. Video official embedded
+        player mein chalega.
+      </p>
+      <form id="videoForm">
+        <input id="videoInput" type="text"
+          placeholder="YouTube video link ya video ID..."
+          autocomplete="url" required>
+        <button class="btn" style="width:100%;margin-top:10px">
+          ▶ Load Music
+        </button>
+      </form>
+      <div id="videoStatus" class="status" role="status">
+        Ready to play. YouTube link paste karke shuru karo.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>▶ Now Playing</h2>
+      <div id="videoArea" class="player-frame">
+        <div class="player-placeholder">
+          <div>
+            <div style="font-size:42px;margin-bottom:12px">♫</div>
+            <strong>Your music starts here</strong>
+            <p class="muted">Load a YouTube video to begin.</p>
+          </div>
+        </div>
+      </div>
+      <p class="muted">
+        Note: Kuch videos owner ki settings ke kaaran embedded player mein
+        nahi chalenge.
+      </p>
     </div>
   </section>
 
-  <section class="box">
-    <h2>❤️ Favourites</h2>
-    <div id="favorites">
-      <p class="empty">Favourite songs yahan dikhenge.</p>
+  <section id="library" class="section">
+    <div class="card">
+      <h2>♫ Your Library</h2>
+      <p class="muted">
+        Jo videos tum load karoge, unhe yahan save kar sakte ho.
+        Ye YouTube ke original audio files download nahi karta.
+      </p>
+      <div id="libraryList"></div>
     </div>
+  </section>
+
+  <section id="favorites" class="section">
+    <div class="card">
+      <h2>♥ Your Favorites</h2>
+      <div id="favoriteList"></div>
+    </div>
+  </section>
+
+  <section id="playlists" class="section">
+    <div class="card">
+      <h2>▤ Create a Playlist</h2>
+      <form id="playlistForm" class="row">
+        <input id="playlistName" type="text"
+          placeholder="Playlist name..." maxlength="60" required>
+        <button class="btn">Create</button>
+      </form>
+      <p class="muted" style="margin-top:12px">
+        Library ke songs ko playlist mein add kar sakte ho.
+      </p>
+      <div id="playlistList" style="margin-top:18px"></div>
+    </div>
+  </section>
+
+  <section id="recent" class="section">
+    <div class="card">
+      <h2>◷ Recently Played</h2>
+      <div id="recentList"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>About RHYTHM MUSIC</h3>
+    <p class="muted">
+      A personal music interface. YouTube videos are played through
+      YouTube's embedded player. Availability depends on video settings,
+      network connection and YouTube playback requirements.
+    </p>
   </section>
 </main>
 
-<div id="player">
-  <div id="now">🎵 RHYTHM MUSIC — Song select karo</div>
-  <audio id="audio" controls></audio>
+<div class="footer-player">
+  <div id="nowPlaying" class="now-playing">♫ RHYTHM MUSIC — Choose a song</div>
+  <div class="footer-actions">
+    <button class="btn secondary" onclick="showSection('search')">♫ Player</button>
+    <button id="saveCurrent" class="btn" disabled onclick="saveCurrentSong()">＋ Save</button>
+    <span class="muted">Music • Rhythm</span>
+  </div>
+</div>
 </div>
 
 <script>
-const picker=document.getElementById('files');
-const audio=document.getElementById('audio');
-const songList=document.getElementById('songs');
-const favoritesBox=document.getElementById('favorites');
-const search=document.getElementById('search');
-const now=document.getElementById('now');
+const STORAGE_KEY = "rhythm_music_v2";
 
-let songs=[];
-let currentSong=null;
-let favorites=new Set();
+const defaultState = {
+  library: [],
+  favorites: [],
+  playlists: [],
+  recent: []
+};
 
-picker.addEventListener('change',event=>{
-  const files=Array.from(event.target.files||[]);
-  files.forEach(file=>{
-    if(!file.type.startsWith('audio/')) return;
-    songs.push({
-      id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random()),
-      name:file.name.replace(/\.[^.]+$/,''),
-      file,
-      url:URL.createObjectURL(file)
-    });
+let state = loadState();
+let currentSong = null;
+
+function loadState() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (stored && Array.isArray(stored.library)) {
+      return {
+        library: stored.library,
+        favorites: Array.isArray(stored.favorites) ? stored.favorites : [],
+        playlists: Array.isArray(stored.playlists) ? stored.playlists : [],
+        recent: Array.isArray(stored.recent) ? stored.recent : []
+      };
+    }
+  } catch (error) {
+    console.warn("Saved library could not be loaded.", error);
+  }
+  return structuredClone(defaultState);
+}
+
+function persist() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    return true;
+  } catch (error) {
+    alert("Browser storage full ya unavailable hai. Browser settings check karo.");
+    return false;
+  }
+}
+
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(section => {
+    section.classList.toggle("active", section.id === id);
   });
-  render();
-  if(songs.length && !currentSong) playSong(songs[0]);
-  picker.value='';
+  document.querySelectorAll(".tab").forEach(tab => {
+    tab.classList.toggle("active", tab.dataset.section === id);
+  });
+}
+
+function extractVideoId(raw) {
+  try {
+    const value = raw.trim();
+
+    // A direct 11-character YouTube video ID.
+    if (/^[a-zA-Z0-9_-]{11}$/.test(value)) return value;
+
+    const url = new URL(value);
+    const host = url.hostname.toLowerCase().replace(/^www\./, "");
+
+    if (host === "youtu.be") {
+      const id = url.pathname.split("/").filter(Boolean)[0];
+      return id && /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : null;
+    }
+
+    if (
+      host === "youtube.com" ||
+      host === "m.youtube.com" ||
+      host === "music.youtube.com" ||
+      host === "youtube-nocookie.com"
+    ) {
+      let id = url.searchParams.get("v");
+
+      if (!id) {
+        const parts = url.pathname.split("/").filter(Boolean);
+        if (["embed", "shorts", "live", "v"].includes(parts[0])) {
+          id = parts[1];
+        }
+      }
+
+      return id && /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : null;
+    }
+
+    return null;
+  } catch (error) {
+    return null;
+  }
+}
+
+function safeText(element, text) {
+  element.textContent = text;
+}
+
+function setStatus(message) {
+  safeText(document.getElementById("videoStatus"), message);
+}
+
+document.getElementById("videoForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const input = document.getElementById("videoInput").value.trim();
+  const videoId = extractVideoId(input);
+
+  if (!videoId) {
+    setStatus("Valid YouTube video link paste karo. Example: youtube.com/watch?v=VIDEO_ID");
+    return;
+  }
+
+  const existing = state.library.find(song => song.id === videoId);
+
+  currentSong = existing || {
+    id: videoId,
+    title: "YouTube Video " + videoId,
+    url: "https://www.youtube.com/watch?v=" + videoId,
+    addedAt: Date.now()
+  };
+
+  loadPlayer(videoId);
 });
 
-function playSong(song){
-  currentSong=song;
-  audio.src=song.url;
-  now.textContent='🎵 '+song.name;
-  audio.play().catch(()=>{});
-  render();
+function loadPlayer(videoId) {
+  const area = document.getElementById("videoArea");
+  area.replaceChildren();
+
+  const frame = document.createElement("iframe");
+  frame.title = "YouTube music player";
+  frame.src = "https://www.youtube.com/embed/" +
+    encodeURIComponent(videoId) +
+    "?playsinline=1&enablejsapi=1&origin=" +
+    encodeURIComponent(location.origin);
+
+  frame.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+  frame.allowFullscreen = true;
+  frame.referrerPolicy = "strict-origin-when-cross-origin";
+
+  area.appendChild(frame);
+
+  safeText(document.getElementById("nowPlaying"), "♫ Playing: " + currentSong.title);
+  document.getElementById("saveCurrent").disabled = false;
+
+  state.recent = [
+    videoId,
+    ...state.recent.filter(id => id !== videoId)
+  ].slice(0, 30);
+
+  persist();
+  renderAll();
+
+  setStatus("Player loaded. Agar video support karta hai, YouTube player se play karo.");
 }
 
-function toggleFavorite(id){
-  if(favorites.has(id)) favorites.delete(id);
-  else favorites.add(id);
-  render();
+function saveCurrentSong() {
+  if (!currentSong) return;
+
+  const existing = state.library.find(song => song.id === currentSong.id);
+
+  if (existing) {
+    setStatus("Ye song tumhari library mein pehle se hai.");
+    return;
+  }
+
+  state.library.unshift({
+    id: currentSong.id,
+    title: currentSong.title,
+    url: currentSong.url,
+    addedAt: Date.now()
+  });
+
+  persist();
+  renderAll();
+  setStatus("Song library mein save ho gaya. Naam edit kar sakte ho.");
 }
 
-function makeSongElement(song){
-  const row=document.createElement('div');
-  row.className='song';
+function toggleFavorite(id) {
+  if (state.favorites.includes(id)) {
+    state.favorites = state.favorites.filter(item => item !== id);
+  } else {
+    state.favorites.push(id);
+  }
+  persist();
+  renderAll();
+}
 
-  const info=document.createElement('div');
-  info.className='song-info';
+function playSong(id) {
+  const song = state.library.find(item => item.id === id);
+  if (!song) return;
 
-  const title=document.createElement('b');
-  title.textContent=song.name;
+  currentSong = song;
+  document.getElementById("videoInput").value = song.url;
+  loadPlayer(song.id);
+  showSection("search");
+}
 
-  const subtitle=document.createElement('small');
-  subtitle.textContent=currentSong?.id===song.id?'▶ Now playing':'Audio track';
+function makeSongRow(song) {
+  const row = document.createElement("div");
+  row.className = "song";
 
-  info.append(title,subtitle);
+  const cover = document.createElement("div");
+  cover.className = "cover";
+  cover.textContent = "♫";
 
-  const play=document.createElement('button');
-  play.textContent='▶';
-  play.setAttribute('aria-label','Play '+song.name);
-  play.onclick=()=>playSong(song);
+  const info = document.createElement("div");
+  info.className = "song-info";
 
-  const fav=document.createElement('button');
-  fav.textContent=favorites.has(song.id)?'❤️':'♡';
-  fav.style.background='#382047';
-  fav.onclick=()=>toggleFavorite(song.id);
+  const title = document.createElement("strong");
+  title.textContent = song.title;
 
-  row.append(info,play,fav);
+  const subtitle = document.createElement("small");
+  subtitle.textContent = "YouTube video";
+
+  info.append(title, subtitle);
+
+  const play = document.createElement("button");
+  play.className = "icon-btn";
+  play.textContent = "▶";
+  play.setAttribute("aria-label", "Play " + song.title);
+  play.onclick = () => playSong(song.id);
+
+  const favorite = document.createElement("button");
+  favorite.className = "icon-btn";
+  favorite.textContent = state.favorites.includes(song.id) ? "♥" : "♡";
+  favorite.setAttribute("aria-label", "Toggle favorite");
+  favorite.onclick = () => toggleFavorite(song.id);
+
+  const menu = document.createElement("button");
+  menu.className = "icon-btn";
+  menu.textContent = "⋯";
+  menu.onclick = () => renameSong(song.id);
+
+  row.append(cover, info, play, favorite, menu);
   return row;
 }
 
-function render(){
-  const query=search.value.trim().toLowerCase();
-  const filtered=songs.filter(s=>s.name.toLowerCase().includes(query));
+function renderList(targetId, songs, emptyMessage) {
+  const target = document.getElementById(targetId);
+  target.replaceChildren();
 
-  songList.replaceChildren();
-  document.getElementById('count').textContent='('+filtered.length+')';
-
-  if(!filtered.length){
-    const msg=document.createElement('p');
-    msg.className='empty';
-    msg.textContent=songs.length?'Koi matching song nahi mila.':'Abhi koi song add nahi kiya.';
-    songList.append(msg);
-  }else{
-    filtered.forEach(song=>songList.append(makeSongElement(song)));
+  if (!songs.length) {
+    const message = document.createElement("div");
+    message.className = "empty";
+    message.textContent = emptyMessage;
+    target.append(message);
+    return;
   }
 
-  favoritesBox.replaceChildren();
-  const favSongs=songs.filter(s=>favorites.has(s.id));
+  songs.forEach(song => target.append(makeSongRow(song)));
+}
 
-  if(!favSongs.length){
-    const msg=document.createElement('p');
-    msg.className='empty';
-    msg.textContent='Abhi koi favourite song nahi hai.';
-    favoritesBox.append(msg);
-  }else{
-    favSongs.forEach(song=>favoritesBox.append(makeSongElement(song)));
+function renameSong(id) {
+  const song = state.library.find(item => item.id === id);
+  if (!song) return;
+
+  const newName = prompt("Song ka naam:", song.title);
+  if (newName === null) return;
+
+  const title = newName.trim();
+  if (!title) return;
+
+  song.title = title.slice(0, 120);
+
+  if (currentSong && currentSong.id === id) {
+    currentSong.title = song.title;
+    safeText(document.getElementById("nowPlaying"), "♫ Playing: " + song.title);
+  }
+
+  persist();
+  renderAll();
+}
+
+document.getElementById("playlistForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const input = document.getElementById("playlistName");
+  const name = input.value.trim();
+  if (!name) return;
+
+  state.playlists.push({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+    name: name.slice(0, 60),
+    songs: []
+  });
+
+  input.value = "";
+  persist();
+  renderAll();
+});
+
+function addSongToPlaylist(playlistId) {
+  if (!state.library.length) {
+    alert("Pehle Discover mein YouTube link load karo aur Save dabao.");
+    return;
+  }
+
+  const playlist = state.playlists.find(item => item.id === playlistId);
+  if (!playlist) return;
+
+  const choices = state.library.map((song, index) =>
+    (index + 1) + ". " + song.title
+  ).join("\n");
+
+  const answer = prompt("Song ka number likho:\n" + choices);
+  if (answer === null) return;
+
+  const index = Number(answer) - 1;
+  if (!Number.isInteger(index) || index < 0 || index >= state.library.length) {
+    alert("Valid song number choose karo.");
+    return;
+  }
+
+  const id = state.library[index].id;
+
+  if (!playlist.songs.includes(id)) {
+    playlist.songs.push(id);
+    persist();
+    renderAll();
   }
 }
 
-search.addEventListener('input',render);
+function deletePlaylist(id) {
+  if (!confirm("Is playlist ko delete karna hai?")) return;
+  state.playlists = state.playlists.filter(item => item.id !== id);
+  persist();
+  renderAll();
+}
 
-audio.addEventListener('ended',()=>{
-  if(!currentSong||!songs.length) return;
-  const index=songs.findIndex(s=>s.id===currentSong.id);
-  playSong(songs[(index+1)%songs.length]);
-});
+function renderPlaylists() {
+  const target = document.getElementById("playlistList");
+  target.replaceChildren();
+
+  if (!state.playlists.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "Abhi koi playlist nahi. Upar naam likhkar create karo.";
+    target.append(empty);
+    return;
+  }
+
+  state.playlists.forEach(playlist => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const title = document.createElement("h3");
+    title.textContent = "♫ " + playlist.name;
+
+    const count = document.createElement("p");
+    count.className = "muted";
+    count.textContent = playlist.songs.length + " songs";
+
+    const add = document.createElement("button");
+    add.className = "btn secondary";
+    add.textContent = "+ Add song";
+    add.onclick = () => addSongToPlaylist(playlist.id);
+
+    const remove = document.createElement("button");
+    remove.className = "btn ghost";
+    remove.style.marginLeft = "7px";
+    remove.textContent = "Delete";
+    remove.onclick = () => deletePlaylist(playlist.id);
+
+    card.append(title, count, add, remove);
+
+    const songs = playlist.songs
+      .map(id => state.library.find(song => song.id === id))
+      .filter(Boolean);
+
+    songs.forEach(song => card.append(makeSongRow(song)));
+
+    target.append(card);
+  });
+}
+
+function renderAll() {
+  renderList("libraryList", state.library, "Abhi library khaali hai. Discover mein YouTube link load karke Save dabao.");
+  renderList("favoriteList",
+    state.library.filter(song => state.favorites.includes(song.id)),
+    "Abhi favourites nahi hain. Library mein ♡ dabao."
+  );
+  renderList("recentList",
+    state.recent.map(id => state.library.find(song => song.id === id)).filter(Boolean),
+    "Jo songs tum library mein save karoge, woh recently played mein dikh sakte hain."
+  );
+  renderPlaylists();
+}
+
+renderAll();
 </script>
 </body>
   </html>
