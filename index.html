@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090611">
+<title>RHYTHM MUSIC</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#090611;
+  color:white;
+  font-family:Arial,sans-serif;
+}
+header{
+  padding:22px 18px;
+  background:linear-gradient(135deg,#240743,#10091c);
+  border-bottom:1px solid #38204d;
+}
+.logo{font-size:25px;font-weight:900;letter-spacing:2px}
+.logo span{color:#c084fc}
+header p{color:#b9a8ca;font-size:13px}
+main{padding:20px 16px;padding-bottom:150px}
+h2{font-size:21px}
+.box{
+  background:#171020;
+  padding:18px;
+  border-radius:18px;
+  margin-bottom:20px;
+  border:1px solid #30203d;
+}
+button,.upload{
+  border:0;
+  border-radius:12px;
+  background:#a855f7;
+  color:white;
+  padding:13px 16px;
+  font-weight:bold;
+  cursor:pointer;
+  display:inline-block;
+}
+input[type="text"]{
+  width:100%;
+  background:#090611;
+  border:1px solid #49305b;
+  padding:14px;
+  color:white;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+.song{
+  background:#20172b;
+  padding:14px;
+  border-radius:12px;
+  margin:9px 0;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.song-info{flex:1;min-width:0}
+.song-info b{display:block;overflow-wrap:anywhere}
+.song-info small{color:#b9a8ca}
+.song button{padding:10px}
+#player{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:#160d20;
+  border-top:1px solid #593477;
+  padding:14px 16px;
+}
+#now{font-size:14px;margin-bottom:10px}
+audio{width:100%;height:38px}
+.empty{color:#b9a8ca;font-size:14px}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="logo">RHYTHM <span>MUSIC</span> 🎵</div>
+  <p>Your music. Your vibe. Your world.</p>
+</header>
+
+<main>
+  <section class="box">
+    <h2>🎧 Your Music Library</h2>
+    <p class="empty">Apne phone ke songs yahan add karo.</p>
+    <label class="upload">
+      ＋ Import Songs
+      <input id="files" type="file" accept="audio/*" multiple hidden>
+    </label>
+  </section>
+
+  <section class="box">
+    <h2>🔎 Search Music</h2>
+    <input id="search" type="text" placeholder="Song ka naam search karo...">
+  </section>
+
+  <section>
+    <h2>🎶 All Songs <span id="count"></span></h2>
+    <div id="songs">
+      <p class="empty">Abhi koi song add nahi kiya.</p>
+    </div>
+  </section>
+
+  <section class="box">
+    <h2>❤️ Favourites</h2>
+    <div id="favorites">
+      <p class="empty">Favourite songs yahan dikhenge.</p>
+    </div>
+  </section>
+</main>
+
+<div id="player">
+  <div id="now">🎵 RHYTHM MUSIC — Song select karo</div>
+  <audio id="audio" controls></audio>
+</div>
+
+<script>
+const picker=document.getElementById('files');
+const audio=document.getElementById('audio');
+const songList=document.getElementById('songs');
+const favoritesBox=document.getElementById('favorites');
+const search=document.getElementById('search');
+const now=document.getElementById('now');
+
+let songs=[];
+let currentSong=null;
+let favorites=new Set();
+
+picker.addEventListener('change',event=>{
+  const files=Array.from(event.target.files||[]);
+  files.forEach(file=>{
+    if(!file.type.startsWith('audio/')) return;
+    songs.push({
+      id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random()),
+      name:file.name.replace(/\.[^.]+$/,''),
+      file,
+      url:URL.createObjectURL(file)
+    });
+  });
+  render();
+  if(songs.length && !currentSong) playSong(songs[0]);
+  picker.value='';
+});
+
+function playSong(song){
+  currentSong=song;
+  audio.src=song.url;
+  now.textContent='🎵 '+song.name;
+  audio.play().catch(()=>{});
+  render();
+}
+
+function toggleFavorite(id){
+  if(favorites.has(id)) favorites.delete(id);
+  else favorites.add(id);
+  render();
+}
+
+function makeSongElement(song){
+  const row=document.createElement('div');
+  row.className='song';
+
+  const info=document.createElement('div');
+  info.className='song-info';
+
+  const title=document.createElement('b');
+  title.textContent=song.name;
+
+  const subtitle=document.createElement('small');
+  subtitle.textContent=currentSong?.id===song.id?'▶ Now playing':'Audio track';
+
+  info.append(title,subtitle);
+
+  const play=document.createElement('button');
+  play.textContent='▶';
+  play.setAttribute('aria-label','Play '+song.name);
+  play.onclick=()=>playSong(song);
+
+  const fav=document.createElement('button');
+  fav.textContent=favorites.has(song.id)?'❤️':'♡';
+  fav.style.background='#382047';
+  fav.onclick=()=>toggleFavorite(song.id);
+
+  row.append(info,play,fav);
+  return row;
+}
+
+function render(){
+  const query=search.value.trim().toLowerCase();
+  const filtered=songs.filter(s=>s.name.toLowerCase().includes(query));
+
+  songList.replaceChildren();
+  document.getElementById('count').textContent='('+filtered.length+')';
+
+  if(!filtered.length){
+    const msg=document.createElement('p');
+    msg.className='empty';
+    msg.textContent=songs.length?'Koi matching song nahi mila.':'Abhi koi song add nahi kiya.';
+    songList.append(msg);
+  }else{
+    filtered.forEach(song=>songList.append(makeSongElement(song)));
+  }
+
+  favoritesBox.replaceChildren();
+  const favSongs=songs.filter(s=>favorites.has(s.id));
+
+  if(!favSongs.length){
+    const msg=document.createElement('p');
+    msg.className='empty';
+    msg.textContent='Abhi koi favourite song nahi hai.';
+    favoritesBox.append(msg);
+  }else{
+    favSongs.forEach(song=>favoritesBox.append(makeSongElement(song)));
+  }
+}
+
+search.addEventListener('input',render);
+
+audio.addEventListener('ended',()=>{
+  if(!currentSong||!songs.length) return;
+  const index=songs.findIndex(s=>s.id===currentSong.id);
+  playSong(songs[(index+1)%songs.length]);
+});
+</script>
+</body>
+  </html>
